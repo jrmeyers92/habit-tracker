@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import AddHabit from "./AddHabit";
 import { Button, buttonVariants } from "./ui/button";
@@ -16,6 +16,12 @@ const Nav = () => {
         >
           Manage Habits
           <ArrowRight className="ml-2 h-4 w-4" />
+        </Link>
+        <Link
+          href="calendar"
+          className={buttonVariants({ variant: "outline" })}
+        >
+          Calendar <CalendarDays className="ml-2 h-4 w-4" />
         </Link>
 
         <AddHabit />
