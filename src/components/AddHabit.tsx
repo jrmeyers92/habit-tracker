@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -52,7 +52,11 @@ const DAYS_OF_WEEK = [
   { id: "sunday", label: "Sunday" },
 ];
 
-export default function AddHabit() {
+interface AddHabitProps {
+  onComplete?: () => void;
+}
+
+export default function AddHabit({ onComplete }: AddHabitProps) {
   const [habitName, setHabitName] = useState("");
   const [description, setDescription] = useState("");
   const [frequency, setFrequency] = useState("daily");
@@ -88,7 +92,6 @@ export default function AddHabit() {
       frequency,
       specificDays: frequency === "specific-days" ? selectedDays : [],
       timeOfDay,
-
       createdAt: new Date().toISOString(),
       streak: 0,
       completedDates: [],
@@ -113,6 +116,11 @@ export default function AddHabit() {
     // Reset form and close dialog
     resetForm();
     setIsOpen(false);
+
+    // Call the onComplete callback if provided
+    if (onComplete) {
+      onComplete();
+    }
   };
 
   const resetForm = () => {
@@ -124,14 +132,29 @@ export default function AddHabit() {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open && onComplete) {
+          onComplete();
+        }
+      }}
+    >
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setIsOpen(true)}>
-          Add a habit
+        <Button
+          variant="outline"
+          className={buttonVariants({
+            variant: "outline",
+            className: "w-full",
+          })}
+          onClick={() => setIsOpen(true)}
+        >
+          Add Habit
           <Plus className="ml-2 h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add a New Habit</DialogTitle>
           <DialogDescription>
@@ -139,38 +162,38 @@ export default function AddHabit() {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="habit-name" className="text-right">
+          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+            <Label htmlFor="habit-name" className="sm:text-right">
               Name
             </Label>
             <Input
               id="habit-name"
               placeholder="Drink water"
-              className="col-span-3"
+              className="col-span-1 sm:col-span-3"
               value={habitName}
               onChange={(e) => setHabitName(e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="description" className="text-right pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
+            <Label htmlFor="description" className="sm:text-right pt-2">
               Description
             </Label>
             <Textarea
               id="description"
               placeholder="Drink 64oz of water a day"
-              className="col-span-3 min-h-24"
+              className="col-span-1 sm:col-span-3 min-h-24"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="frequency" className="text-right">
+          <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+            <Label htmlFor="frequency" className="sm:text-right">
               Frequency
             </Label>
             <Select value={frequency} onValueChange={setFrequency}>
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-1 sm:col-span-3">
                 <SelectValue placeholder="Select frequency" />
               </SelectTrigger>
               <SelectContent>
@@ -185,9 +208,9 @@ export default function AddHabit() {
           </div>
 
           {frequency === "specific-days" && (
-            <div className="grid grid-cols-4 items-start gap-4">
-              <Label className="text-right pt-2">Days</Label>
-              <div className="col-span-3 grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
+              <Label className="sm:text-right pt-2">Days</Label>
+              <div className="col-span-1 sm:col-span-3 grid grid-cols-1 gap-3">
                 {DAYS_OF_WEEK.map((day) => (
                   <div key={day.id} className="flex items-center space-x-2">
                     <Checkbox
@@ -204,10 +227,10 @@ export default function AddHabit() {
             </div>
           )}
 
-          <div className="grid grid-cols-4 items-start gap-4">
-            <Label className="text-right pt-2">Time of Day</Label>
+          <div className="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
+            <Label className="sm:text-right pt-2">Time of Day</Label>
             <RadioGroup
-              className="col-span-3 flex flex-col space-y-1"
+              className="col-span-1 sm:col-span-3 flex flex-col space-y-1"
               defaultValue="anytime"
               value={timeOfDay}
               onValueChange={setTimeOfDay}
@@ -245,7 +268,7 @@ export default function AddHabit() {
             </RadioGroup>
           </div>
         </div>
-        <DialogFooter className="sm:justify-between flex flex-row">
+        <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between">
           <DialogClose asChild>
             <Button type="button" variant="outline" onClick={resetForm}>
               Cancel
