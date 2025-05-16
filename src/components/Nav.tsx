@@ -36,6 +36,10 @@ const Nav = () => {
 
         {/* Desktop navigation */}
         <div className="hidden md:flex gap-2 flex-wrap">
+          <Link href="/" className={buttonVariants({ variant: "outline" })}>
+            Today
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
           <Link
             href="/manage-habits"
             className={buttonVariants({ variant: "outline" })}
@@ -57,6 +61,18 @@ const Nav = () => {
       {/* Mobile navigation menu */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md z-50 py-3 px-4 flex flex-col gap-2 border-t">
+          <Link
+            href="/"
+            className={buttonVariants({
+              variant: "outline",
+              size: "sm",
+              className: "justify-between",
+            })}
+            onClick={toggleMenu}
+          >
+            Today
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
           <Link
             href="/manage-habits"
             className={buttonVariants({
